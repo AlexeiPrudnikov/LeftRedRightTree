@@ -3,9 +3,13 @@ public class RedBlackTree {
 
     public boolean addNode(int value) {
         if (root == null) {
+            root = new Node(value, true);
             return false;
         } else {
-            return addNode(root, value);
+            boolean result = addNode(root, value);
+            root = rebalance(root);
+            root.color = Color.BLACK;
+            return result;
         }
     }
 
@@ -19,7 +23,7 @@ public class RedBlackTree {
                     return true;
                 } else {
                     boolean result = addNode(node.leftChild, value);
-                    // перестроить
+                    node.leftChild = rebalance(node.leftChild);
                     return result;
                 }
             } else if (node.value < value) {
@@ -28,7 +32,7 @@ public class RedBlackTree {
                     return true;
                 } else {
                     boolean result = addNode(node.rightChild, value);
-                    // перестроить
+                    node.rightChild = rebalance(node.rightChild);
                     return result;
                 }
             } else {
@@ -71,6 +75,16 @@ public class RedBlackTree {
                     (result.leftChild == null || result.leftChild.color == Color.BLACK)) {
                     needBalance = true;
                     result = rightTurn(result);
+            }
+            if (result.leftChild != null && result.leftChild.color == Color.RED &&
+            result.leftChild.leftChild != null && result.leftChild.leftChild.color == Color.RED) {
+                needBalance = true;
+                result = leftTurn(result);
+            }
+            if (result.leftChild != null && result.leftChild.color == Color.RED &&
+            result.rightChild != null && result.rightChild.color == Color.RED) {
+                needBalance = true;
+                colorSwap(result);
             }
         } while (needBalance);
         return result;
