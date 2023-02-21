@@ -4,7 +4,7 @@ public class RedBlackTree {
     public boolean addNode(int value) {
         if (root == null) {
             root = new Node(value, true);
-            return false;
+            return true;
         } else {
             boolean result = addNode(root, value);
             root = rebalance(root);
@@ -50,7 +50,8 @@ public class RedBlackTree {
     private Node leftTurn(Node node) {
         Node leftChild = node.leftChild;
         Node betweenChild = node.rightChild;
-        betweenChild.rightChild = node;
+        leftChild.rightChild = node;
+        node.leftChild = betweenChild;
         leftChild.color = node.color;
         node.color = Color.RED;
         return leftChild;
@@ -59,7 +60,7 @@ public class RedBlackTree {
     private Node rightTurn(Node node) {
         Node rightChild = node.rightChild;
         Node betweenChild = rightChild.leftChild;
-        betweenChild.leftChild = node;
+        rightChild.leftChild = node;
         node.rightChild = betweenChild;
         rightChild.color = node.color;
         node.color = Color.RED;
